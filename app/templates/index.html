@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Home page</title>
+    </head>
+    <body>
+        <h1>Data Access</h1>
+        <!-- <a href=get_data><button type="button" value="get_data">GetData</button></a> -->
+        <form method="post" action="/get_data">
+            <input type="submit" value="getdata" name="getdata"/>
+        </form>
+    </body>
+    {% for com in list_components %}
+    <p>{{ com }} </p>
+    {% endfor %}
+</html>
+
