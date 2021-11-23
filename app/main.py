@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request
 import logging, mariadb, sys, pymongo, configparser, os
 from app.mariadb_connect import MariadbConnect
 from pymongo import MongoClient
+from datetime import datetime
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
@@ -57,7 +58,8 @@ def insert_document_mongodb(list_components):
         """ Insert rows of Component_View table from mariadb server to mongodb """
 
         dict_components = {}
-        dict_components["mylist"] = list_components
+        dict_components["components"] = list_components
+        dict_components["time_stamp"] = datetime.now()
         app.logger.debug('Dictionary components %s',dict_components)         
         collection.insert_one(dict_components)
 
