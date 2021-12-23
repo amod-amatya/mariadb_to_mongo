@@ -24,8 +24,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
   <div class="w3-display-middle" style="width:90%; height:80%">
     <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Database');"><!--<i class="fa fa-plane w3-margin-right">--></i>Database</button>
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Threats');"><!--<i class="fa fa-bed w3-margin-right">--></i>Threats</button>
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Components');"><!--<i class="fa fa-car w3-margin-right">--></i>Components</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Components');"><!--<i class="fa fa-bed w3-margin-right">--></i>Threats</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Threats');"><!--<i class="fa fa-car w3-margin-right">--></i>Components</button>
     </div>
 
     <!-- Tabs -->
@@ -36,6 +36,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
           <!-- <label>From</label> -->
         <form action="#" method="post">
           <input class="w3-input-large w3-border" type="text" placeholder="Use Case" name="usecase">
+          <select class="dropdown" name="interfaces" method="GET" action="/" style="font-size:1.2em">
+            <option value="" selected>Choose Interface</option>
+            {% for interface in interfaces %}
+                <option value= "{{interface}}">{{interface}}</option>"
+            {% endfor %}
+        </select>
         </div>
         <div class="w3-half">
           <!-- <label>To</label> -->
@@ -46,21 +52,25 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
         </div>
       </div>
       <p><input type="submit" class="w3-button w3-dark-grey" name="button" value="Start" />
-        <input type="submit" class="w3-button w3-dark-grey" name="button" value="Get-Data"/>
+        <input type="submit" class="w3-button w3-dark-grey" name="button" value="get-data"/>
         <!-- <a href="/get_data"><button type="button" class="w3-button w3-dark-grey" >Get Data</button></a> -->
       </p>
 </form>
     </div>
 
     <div id="Threats" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>List of Automotive Threats</h3>
-      <p>Brute Force Attack</p>
-      <p><button class="w3-button w3-dark-grey">Search</button></p>
+      <h3>Add Automotive Components</h3>
+      <select class="dropdown" name=interfaces method="GET" action="/">
+        <option value="" selected>Choose Interface</option>
+        {% for component in interfaces %}
+          <option value= "{{component}}">{{component}}</option>"
+        {% endfor %}
+    </select>
     </div>
 
     <div id="Components" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>List of Automotive Components</h3>
-      <p><span class="w3-tag w3-deep-orange">Assets</span> Telematics</p>
+      <h3>List of Automotive Threats</h3>
+      <!-- <p><span class="w3-tag w3-deep-orange">Assets</span> Telematics</p> -->
     </div>
   </div>
 </header>

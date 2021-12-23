@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/w3.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Attack Sequence</title>
+</head>
+<div class="w3-bar w3-white w3-border-bottom w3-xlarge w3-text-blue">Attack Path Sequence</div>
+<body>
+<div class="w3-text-blue margin-set set-font">
+<select class="dropdown" name=environment1 method="GET" action="/">
+        {% for env in environment1 %}
+        <option value= "{{env}}" SELECTED>{{env}}</option>"
+        {% endfor %}
+    </select>
+<input class="w3-input w3-border w3-seq" type="text" placeholder="Sequence" name="sequence0">
+<select class="dropdown" name=environment2 method="GET" action="/">
+    {% for env in environment2 %}
+    <option value= "{{env}}" SELECTED>{{env}}</option>"
+    {% endfor %}
+</select>
+<input class="w3-input w3-border w3-seq" type="text" placeholder="Sequence" name="sequence0a">
+<select class="dropdown" name=input_components method="GET" action="/">
+    {% for component in input_components %}
+    <option value= "{{component}}" SELECTED>{{component}}</option>"
+    {% endfor %}
+</select>
+<input class="w3-input w3-border w3-seq" type="text" placeholder="Sequence" name="sequence1">
+<select class="dropdown" name=mid_components method="GET" action="/">
+    {% for component in mid_components %}
+    <option value= "{{component}}" SELECTED>{{component}}</option>"
+    {% endfor %}
+</select>
+<input class="w3-input w3-border w3-seq" type="text" placeholder="Sequence" name="sequence2">
+<select class="dropdown" name=output_components method="GET" action="/">
+    {% for component in output_components %}
+    <option value= "{{component}}" SELECTED>{{component}}</option>"
+    {% endfor %}
+</select>
+<input class="w3-input w3-border w3-seq" type="text" placeholder="Sequence" name="sequence3">
+<select class="dropdown" name=output_components_VCU method="GET" action="/">
+    {% for component in output_components_VCU %}
+    <option value= "{{component}}" SELECTED>{{component}}</option>"
+    {% endfor %}
+</select>
+</div>
+</body>
+</html>

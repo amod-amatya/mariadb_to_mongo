@@ -1,70 +1,85 @@
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, session
+from flask_session import Session
 import logging, mariadb, sys, pymongo, configparser, os
-from app.db_connect import DbConnect
+from app.models.db_connect import DbConnect
+from app.models.models import *
 from pymongo import MongoClient
 from datetime import datetime
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
 
+SESSION_TYPE = 'filesystem'
+app.config.from_object(__name__)
+Session(app)
+
 root_dir = os.path.dirname(os.path.abspath(__file__))
 config_file = os.path.join(root_dir, "conf/database_config.ini")
 config = configparser.ConfigParser()
 config.read(config_file)
 
-#Mongodb
-cluster = MongoClient(config['mongodb']['host'])
-mongodb = cluster[config['mongodb']['database']]
-collection =  mongodb[config['mongodb']['collection']]
-# list = [a , b ,c, d]
-# collection.insertMany( [
-# { _id: "MongoDB", ancestors: [ "Books", "Programming", "Databases" ], parent: "Databases" },
-# { _id: "dbm", ancestors: [ "Books", "Programming", "Databases" ], parent: "Databases" },
-# ])
 #DB connection constructor initialize
-db_connect = DbConnect(app, config, mongodb, collection)
+db_connect = DbConnect(app, config)
+
+##Connect to mongodb server
+component_collection = db_connect.mongodb_connect()
 
 ##Connect to mariadb server
-cur = db_connect.mariadb_connect()  
+cur = db_connect.mariadb_connect()
 
-## Connection for mongodb 
-mongodb_connect_list = db_connect.mongodb_connect(cur)
+## Get component list from mariadb
+component_list = db_connect.get_list_from_mariadb(cur)
 
+add_components(component_collection)
 
 @app.route("/", methods=["POST", "GET"])
 def home_view():
+        interfaces = ['Remote','Bluetooth','Sensor','Wi-fi','Cellular','OBD','V2X']
+        session['selected_interface']  = request.form.get('interfaces')
+
         if request.method == "POST":
                 if request.form["button"] == "Start":
                         data = request.form["usecase"]
-                        app.logger.debug('Data ' + data)
-                        mongodb_connect_list.insert(0,data)
-                elif request.form["button"] == "Get-Data":
-                        insert_document_mongodb(mongodb_connect_list)
-                        app.logger.debug('Updating UI with %s', mongodb_connect_list)
-                        return render_template("index.html", list_components=mongodb_connect_list)
+                        # app.logger.debug('Data ' + selected_interface)
+                        component_list.insert(0,data)
+                        return redirect(url_for('db_view'))
 
-        return render_template("index.html")
+                elif request.form["button"] == "get-data":
+                        db_connect.insert_document_mongodb(component_list)
+                        app.logger.debug('Updating UI with %s', component_list)
+                        return render_template("index.html", list_components=component_list)
 
-@app.route("/db")
+        return render_template("index.html", interfaces=interfaces)
+
+@app.route("/db", methods=['GET', 'POST'])
 def db_view():
 
-        return "<h1>DB section</h1>"
+        selected_interface = session.get('selected_interface', None)
+        app.logger.debug('Data ' + selected_interface)
+        keyword_extracted = "traffic"
+        # if keyword_extracted.casefold() == "Traffic":
 
-def insert_document_mongodb(list_components):
-        """ Insert rows of Component_View table from mariadb server to mongodb """
 
-        dict_components = {}
-        dict_components["components"] = list_components
-        dict_components["time_stamp"] = str(datetime.now())
-        app.logger.debug('Dictionary components %s',dict_components)
+        if selected_interface == "Sensor":
+                input_components_dropdown = input_components
+        elif selected_interface == "OBD":
+                input_components_dropdown = ['Diagnostic Port']
+        elif selected_interface == "Bluetooth":
+                input_components_dropdown = [network_input_components[1]]
+        elif selected_interface == "Wi-fi":
+                input_components_dropdown = [network_input_components[2]]
+        elif selected_interface == "Cellular":
+                input_components_dropdown = [network_input_components[3]]
+        elif selected_interface == "V2X":
+                input_components_dropdown = network_input_components[-1:]
+        elif selected_interface == "Remote":
+                input_components_dropdown = network_input_components
+        else:
+                input_components_dropdown = input_components
+        
+        mid_components = ['DASy', 'CGU']
+        return render_template("component.html", environment1=environment1, environment2=environment2, input_components=input_components_dropdown,
+                                         mid_components = mid_components, output_components=output_components, 
+                                         output_components_VCU=output_components_VCU)
 
-        collection.insert_one(dict_components)
-
-@app.route("/move_forward")
-def move_forward():
-    #Moving forward code
-    return (''), 204
-
-# if __name__ == '__main__':
-#    app.run(debug=True)
 
