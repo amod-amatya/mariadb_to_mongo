@@ -17,7 +17,7 @@
         {% endfor %}
     </select>
 <input class="w3-input w3-border w3-seq" type="text" placeholder="Sequence" name="sequence0">
-<select class="dropdown" name=environment2 method="GET" action="/">
+<select id="myDiv" class="dropdown" name=environment2 method="GET" action="/">
     {% for env in environment2 %}
     <option value= "{{env}}" SELECTED>{{env}}</option>"
     {% endfor %}
@@ -47,5 +47,9 @@
     {% endfor %}
 </select>
 </div>
+
+<script type = "text/javascript" 
+     src="{{url_for('static', filename='javascript/openlink.js')}}">
+</script>
 </body>
 </html>
